@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCrypt Pro - Advanced Encryption & Decryption Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white mb-4">🔐 SecureCrypt Pro</h1>
+            <p class="text-xl text-white opacity-90">Advanced Encryption & Decryption Suite</p>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="max-w-6xl mx-auto">
+            <!-- Algorithm Selection -->
+            <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">🛡️ Select Encryption Method</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="selectAlgorithm('caesar')" id="caesar-btn" class="algorithm-btn bg-blue-500 hover:bg-blue-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        Caesar Cipher
+                    </button>
+                    <button onclick="selectAlgorithm('base64')" id="base64-btn" class="algorithm-btn bg-gray-500 hover:bg-gray-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        Base64 Encoding
+                    </button>
+                    <button onclick="selectAlgorithm('rot13')" id="rot13-btn" class="algorithm-btn bg-purple-500 hover:bg-purple-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        ROT13
+                    </button>
+                    <button onclick="selectAlgorithm('reverse')" id="reverse-btn" class="algorithm-btn bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        Reverse Text
+                    </button>
+                    <button onclick="selectAlgorithm('atbash')" id="atbash-btn" class="algorithm-btn bg-red-500 hover:bg-red-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        Atbash Cipher
+                    </button>
+                    <button onclick="selectAlgorithm('binary')" id="binary-btn" class="algorithm-btn bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                        Binary Encoding
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input/Output Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Input Section -->
+                <div class="bg-white rounded-2xl card-shadow p-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">📝 Input Text</h3>
+                    <textarea id="inputText" placeholder="Enter your text here..." class="w-full h-40 p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none resize-none text-gray-700"></textarea>
+                    
+                    <!-- Caesar Cipher Key Input -->
+                    <div id="caesarKey" class="mt-4 hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Shift Value (1-25):</label>
+                        <input type="number" id="shiftValue" min="1" max="25" value="3" class="w-24 p-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none">
+                    </div>
+
+                    <div class="flex gap-4 mt-6">
+                        <button onclick="encryptText()" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                            🔒 Encrypt
+                        </button>
+                        <button onclick="decryptText()" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                            🔓 Decrypt
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="bg-white rounded-2xl card-shadow p-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">📤 Output Result</h3>
+                    <textarea id="outputText" readonly placeholder="Result will appear here..." class="w-full h-40 p-4 border-2 border-gray-200 rounded-xl bg-gray-50 resize-none text-gray-700"></textarea>
+                    
+                    <div class="flex gap-4 mt-6">
+                        <button onclick="copyToClipboard()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                            📋 Copy Result
+                        </button>
+                        <button onclick="clearAll()" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Algorithm Info -->
+            <div class="bg-white rounded-2xl card-shadow p-8 mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">ℹ️ Algorithm Information</h3>
+                <div id="algorithmInfo" class="text-gray-600">
+                    <p>Select an encryption method above to see detailed information about how it works.</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        let currentAlgorithm = 'caesar';
+        
+        const algorithmInfo = {
+            caesar: {
+                name: 'Caesar Cipher',
+                description: 'A substitution cipher where each letter is shifted by a fixed number of positions in the alphabet. Named after Julius Caesar who used it for military communications.',
+                example: 'With shift 3: A→D, B→E, C→F, etc.'
+            },
+            base64: {
+                name: 'Base64 Encoding',
+                description: 'A binary-to-text encoding scheme that represents binary data in ASCII format. Commonly used for data transmission and storage.',
+                example: 'Text "Hello" becomes "SGVsbG8="'
+            },
+            rot13: {
+                name: 'ROT13',
+                description: 'A simple letter substitution cipher that replaces each letter with the letter 13 positions after it in the alphabet. Self-inverse cipher.',
+                example: 'A→N, B→O, C→P, etc.'
+            },
+            reverse: {
+                name: 'Reverse Text',
+                description: 'Simply reverses the order of characters in the text. Easy to implement but provides minimal security.',
+                example: '"Hello World" becomes "dlroW olleH"'
+            },
+            atbash: {
+                name: 'Atbash Cipher',
+                description: 'An ancient Hebrew cipher where the first letter of the alphabet is replaced with the last, second with second-to-last, etc.',
+                example: 'A→Z, B→Y, C→X, etc.'
+            },
+            binary: {
+                name: 'Binary Encoding',
+                description: 'Converts text to binary representation where each character is represented by its 8-bit binary code.',
+                example: '"A" becomes "01000001"'
+            }
+        };
+
+        function selectAlgorithm(algorithm) {
+            currentAlgorithm = algorithm;
+            
+            // Update button styles
+            document.querySelectorAll('.algorithm-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-blue-300');
+            });
+            document.getElementById(algorithm + '-btn').classList.add('ring-4', 'ring-blue-300');
+            
+            // Show/hide Caesar key input
+            const caesarKey = document.getElementById('caesarKey');
+            if (algorithm === 'caesar') {
+                caesarKey.classList.remove('hidden');
+            } else {
+                caesarKey.classList.add('hidden');
+            }
+            
+            // Update algorithm info
+            updateAlgorithmInfo(algorithm);
+        }
+
+        function updateAlgorithmInfo(algorithm) {
+            const info = algorithmInfo[algorithm];
+            document.getElementById('algorithmInfo').innerHTML = `
+                <div class="animate-fade-in">
+                    <h4 class="font-semibold text-lg text-gray-800 mb-2">${info.name}</h4>
+                    <p class="mb-3">${info.description}</p>
+                    <p class="text-sm text-gray-500"><strong>Example:</strong> ${info.example}</p>
+                </div>
+            `;
+        }
+
+        function encryptText() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) {
+                alert('Please enter some text to encrypt!');
+                return;
+            }
+            
+            let result = '';
+            
+            switch(currentAlgorithm) {
+                case 'caesar':
+                    const shift = parseInt(document.getElementById('shiftValue').value);
+                    result = caesarCipher(input, shift);
+                    break;
+                case 'base64':
+                    result = btoa(input);
+                    break;
+                case 'rot13':
+                    result = rot13(input);
+                    break;
+                case 'reverse':
+                    result = input.split('').reverse().join('');
+                    break;
+                case 'atbash':
+                    result = atbashCipher(input);
+                    break;
+                case 'binary':
+                    result = textToBinary(input);
+                    break;
+            }
+            
+            document.getElementById('outputText').value = result;
+            animateResult();
+        }
+
+        function decryptText() {
+            const input = document.getElementById('inputText').value;
+            if (!input.trim()) {
+                alert('Please enter some text to decrypt!');
+                return;
+            }
+            
+            let result = '';
+            
+            try {
+                switch(currentAlgorithm) {
+                    case 'caesar':
+                        const shift = parseInt(document.getElementById('shiftValue').value);
+                        result = caesarCipher(input, -shift);
+                        break;
+                    case 'base64':
+                        result = atob(input);
+                        break;
+                    case 'rot13':
+                        result = rot13(input); // ROT13 is self-inverse
+                        break;
+                    case 'reverse':
+                        result = input.split('').reverse().join('');
+                        break;
+                    case 'atbash':
+                        result = atbashCipher(input); // Atbash is self-inverse
+                        break;
+                    case 'binary':
+                        result = binaryToText(input);
+                        break;
+                }
+                
+                document.getElementById('outputText').value = result;
+                animateResult();
+            } catch (error) {
+                alert('Invalid input for decryption! Please check your text format.');
+            }
+        }
+
+        function caesarCipher(text, shift) {
+            return text.replace(/[a-zA-Z]/g, function(char) {
+                const start = char <= 'Z' ? 65 : 97;
+                return String.fromCharCode(((char.charCodeAt(0) - start + shift + 26) % 26) + start);
+            });
+        }
+
+        function rot13(text) {
+            return text.replace(/[a-zA-Z]/g, function(char) {
+                const start = char <= 'Z' ? 65 : 97;
+                return String.fromCharCode(((char.charCodeAt(0) - start + 13) % 26) + start);
+            });
+        }
+
+        function atbashCipher(text) {
+            return text.replace(/[a-zA-Z]/g, function(char) {
+                if (char <= 'Z') {
+                    return String.fromCharCode(90 - (char.charCodeAt(0) - 65));
+                } else {
+                    return String.fromCharCode(122 - (char.charCodeAt(0) - 97));
+                }
+            });
+        }
+
+        function textToBinary(text) {
+            return text.split('').map(char => 
+                char.charCodeAt(0).toString(2).padStart(8, '0')
+            ).join(' ');
+        }
+
+        function binaryToText(binary) {
+            return binary.split(' ').map(bin => 
+                String.fromCharCode(parseInt(bin, 2))
+            ).join('');
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('outputText');
+            if (!output.value) {
+                alert('No result to copy!');
+                return;
+            }
+            
+            output.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            btn.classList.add('bg-green-500');
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-green-500');
+            }, 2000);
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').value = '';
+        }
+
+
+
+        function animateResult() {
+            const output = document.getElementById('outputText');
+            output.classList.add('animate-fade-in');
+            setTimeout(() => {
+                output.classList.remove('animate-fade-in');
+            }, 500);
+        }
+
+        // Initialize with Caesar cipher selected
+        selectAlgorithm('caesar');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f8d42ff30a3f6d',t:'MTc1NTI2MjM0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
